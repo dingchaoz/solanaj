@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  solana-node:
+    platform: linux/amd64
+    image: fda-solana-node-localnet:0.0.1
+    container_name: solana-node-localnet
+    environment:
+      - SOLANA_VERSION=v2.0.15
+      - DYNAMIC_PORT_RANGE=9800-9820
+    ports:
+      - "49173:49173"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "-X", "POST", "-H", "Content-Type: application/json", "-d", "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"getHealth\"}", "http://localhost:8899", "|", "grep", "-q", "\"result\":\"ok\""]
+      interval: 30s
+      timeout: 10s
+      retries: 3

@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  solana-node:
+    platform: linux/amd64  # Explicitly set platform
+    image: solanalabs/solana@sha256:f83ada8d110b6a48c8c8913d42fc45147caaec529f1606ef7ea501628bff7351
+    container_name: solana-node
+    command: >
+      bash -c "
+        solana-test-validator
+          --no-bpf-jit
+          --reset
+          --rpc-port 8899
+          --bind-address 0.0.0.0
+    environment:
+      - SOLANA_VERSION=v1.18.18
+      - RUST_BACKTRACE=1         # For better error reporting
+      - SOLANA_CUDA=0            # Disable CUDA
+    ports:
+      - "8899:8899"              # RPC
+      - "8900:8900"              # PubSub
+    healthcheck:
+      test: ["CMD", "curl", "-f", "-X", "POST", "-H", "Content-Type: application/json", "-d", "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"getHealth\"}", "http://localhost:8899"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 8G
+        reservations:
+          cpus: '2'
+          memory: 4G

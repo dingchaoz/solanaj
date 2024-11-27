@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  solana-node:
+    platform: linux/amd64
+    image: solanalabs/solana:v1.14.29
+    container_name: solana-node
+    command: >
+      bash -c "
+        mkdir -p /root/.config/solana &&
+        solana-keygen new --no-bip39-passphrase -o /root/.config/solana/id.json &&
+        solana-test-validator
+          --no-bpf-jit
+          --reset
+          --rpc-port 8899
+          --faucet-port 9900
+          --bind-address 0.0.0.0
+          --no-snapshot-fetch
+          --log -
+          --ledger /root/.config/solana/ledger
+          --limit-ledger-size 50000000
+          --quiet
+      "
+    environment:
+      - RUST_BACKTRACE=1
+      - SOLANA_CUDA=0
+    ports:
+      - "8899:8899"
+      - "8900:8900"
+      - "9900:9900"
+    volumes:
+      - solana-data:/root/.config/solana
+    restart: unless-stopped  # Add restart policy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "-X", "POST", "-H", "Content-Type: application/json", "-d", "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"getHealth\"}", "http://localhost:8899"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s  # Give it some time to start up
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 8G
+        reservations:
+          cpus: '2'
+          memory: 4G
+
+volumes:
+  solana-data:
