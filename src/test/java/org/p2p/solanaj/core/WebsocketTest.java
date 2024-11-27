@@ -77,7 +77,7 @@ public class WebsocketTest {
         } finally {
             executor.shutdownNow();
             if (client != null) {
-                client.close();
+                client.disconnect();
             }
         }
     }
@@ -121,7 +121,7 @@ public class WebsocketTest {
         } finally {
             if (client != null) {
                 LOGGER.info("Closing WebSocket client");
-                client.close();
+                client.disconnect();
             }
         }
     }
@@ -192,7 +192,7 @@ public class WebsocketTest {
         } finally {
             if (client != null) {
                 LOGGER.info("Closing WebSocket connection");
-                client.close();
+                client.disconnect();
             }
         }
     }
@@ -233,7 +233,7 @@ public class WebsocketTest {
             LOGGER.info("Received " + initialNotifications + " notifications before unsubscribing");
 
             // Unsubscribe
-            subscriptionId.set(client.getSubscriptionId(TEST_ACCOUNT));
+            subscriptionId.set(client.getSubscriptionIdByAccount(TEST_ACCOUNT));
             assertNotNull("Subscription ID should not be null", subscriptionId.get());
             LOGGER.info("Unsubscribing from subscription ID: " + subscriptionId.get());
             client.unsubscribe(subscriptionId.get());
@@ -254,7 +254,7 @@ public class WebsocketTest {
             LOGGER.info("Unsubscribe test completed successfully");
         } finally {
             if (client != null) {
-                client.close();
+                client.disconnect();
             }
         }
     }
