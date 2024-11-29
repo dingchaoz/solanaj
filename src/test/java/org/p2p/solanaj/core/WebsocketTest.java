@@ -1,7 +1,6 @@
 package org.p2p.solanaj.core;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Disabled;
 import static org.junit.jupiter.api.Assertions.*;
 import org.p2p.solanaj.rpc.Cluster;
 import org.p2p.solanaj.ws.SubscriptionWebSocketClient;
@@ -24,7 +23,6 @@ import java.util.concurrent.TimeoutException;
 /**
  * Test class for WebSocket functionality in the Solana Java client.
  */
-@Disabled
 public class WebsocketTest {
 
     private static final Logger LOGGER = Logger.getLogger(WebsocketTest.class.getName());
